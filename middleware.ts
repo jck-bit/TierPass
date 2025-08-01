@@ -14,7 +14,7 @@ export default clerkMiddleware(async (auth, req) => {
     await auth.protect()
   }
 
-  // For API routes, add JWT token to headers for Supabase
+  
   if (req.nextUrl.pathname.startsWith('/api/')) {
     const { getToken } = await auth()
     
@@ -26,7 +26,7 @@ export default clerkMiddleware(async (auth, req) => {
         })
         
         if (token) {
-          // Clone the request and add the JWT token
+          
           const requestHeaders = new Headers(req.headers)
           requestHeaders.set('x-clerk-jwt-token', token)
           

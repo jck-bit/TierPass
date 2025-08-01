@@ -119,7 +119,7 @@ export default function TierUpgradeSimulator({ currentTier, userId }: TierUpgrad
         className={`w-full py-3 px-6 rounded-lg font-semibold transition-all ${
           selectedTier === currentTier || isUpdating
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            : 'bg-[#6c47ff] text-white hover:bg-[#5a3ee6]'
+            : 'bg-[#6c47ff] text-white hover:bg-[#5a3ee6] cursor-pointer'
         }`}
       >
         {isUpdating ? 'Updating...' : selectedTier === currentTier ? 'Current Tier' : 'Simulate Tier Change'}

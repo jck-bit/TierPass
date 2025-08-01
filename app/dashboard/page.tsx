@@ -1,7 +1,7 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { TierType } from '@/lib/services/events'
-import TierUpgradeSimulator from '@/components/TierUpgradeSimulator'
+import TierUpgradeSimulator from '@/app/_components/TierUpgradeSimulator'
 
 export default async function DashboardPage() {
   // Check if user is authenticated
@@ -13,7 +13,7 @@ export default async function DashboardPage() {
   // Get current user and their tier from metadata
   let user = null
   let userTier: TierType = 'free'
-  
+
   try {
     user = await currentUser()
     userTier = (user?.publicMetadata?.tier as TierType) || 'free'
@@ -94,10 +94,10 @@ export default async function DashboardPage() {
                 </li>
               ))}
             </ul>
-            
+
             <div className="mt-8 pt-6 border-t border-gray-200">
-              <a 
-                href="/events" 
+              <a
+                href="/events"
                 className="inline-flex items-center justify-center w-full px-6 py-3 bg-[#6c47ff] text-white font-semibold rounded-lg hover:bg-[#5a3ee6] transition-colors"
               >
                 Browse Available Events
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
           {/* Tier Upgrade Simulator */}
           <div className="bg-white rounded-lg shadow-lg p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Simulate Tier Upgrade
+              Tier Upgrade
             </h2>
             <p className="text-gray-600 mb-6">
               Test how different membership tiers unlock exclusive events. This is for demonstration purposes only.

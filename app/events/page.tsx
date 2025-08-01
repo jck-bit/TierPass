@@ -1,8 +1,8 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { getEventsForUserTier, getAllEvents, TierType } from '@/lib/services/events'
-import EventCard from '@/components/EventCard'
-import EventCardSkeleton from '@/components/EventCardSkeleton'
+import EventCard from '@/app/_components/EventCard'
+import EventCardSkeleton from '@/app/_components/EventCardSkeleton'
 import { Suspense } from 'react'
 
 // Loading component for events
@@ -34,7 +34,7 @@ function EventsError({ error }: { error: Error }) {
 // Separate component for events list
 async function EventsList({ userTier }: { userTier: TierType }) {
   try {
-    
+
     const accessibleEvents = await getEventsForUserTier(userTier)
     const allEvents = await getAllEvents()
 
@@ -73,7 +73,7 @@ export default async function EventsPage() {
 
   let user = null
   let userTier: TierType = 'free'
-  
+
   try {
     user = await currentUser()
     userTier = (user?.publicMetadata?.tier as TierType) || 'free'
@@ -93,16 +93,15 @@ export default async function EventsPage() {
           <p className="text-lg text-gray-600 mb-4">
             Discover and attend events tailored to your membership tier
           </p>
-          
+
           {/* User Tier Badge */}
           <div className="inline-flex items-center space-x-2 bg-white rounded-full px-4 py-2 shadow-md">
             <span className="text-sm font-medium text-gray-600">Your tier:</span>
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-              userTier === 'free' ? 'bg-gray-100 text-gray-800' :
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${userTier === 'free' ? 'bg-gray-100 text-gray-800' :
               userTier === 'silver' ? 'bg-gray-300 text-gray-900' :
-              userTier === 'gold' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-purple-100 text-purple-800'
-            }`}>
+                userTier === 'gold' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-purple-100 text-purple-800'
+              }`}>
               {userTier.charAt(0).toUpperCase() + userTier.slice(1)}
             </span>
           </div>
