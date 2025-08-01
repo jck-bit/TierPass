@@ -33,7 +33,7 @@ export default function RootLayout({
               <div className="flex justify-between items-center h-16">
                 <div className="flex items-center space-x-8">
                   <a href="/" className="text-xl font-bold text-gray-900">
-                    Event Showcase
+                    TierPass
                   </a>
                   <SignedIn>
                     <nav className="hidden md:flex space-x-6">

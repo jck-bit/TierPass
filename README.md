@@ -1,4 +1,4 @@
-# Tier-Based Event Showcase
+# TierPass
 
 A responsive web application that showcases events based on user membership tiers. Built with Next.js 14 (App Router), Clerk.dev for authentication, Supabase for database, and Tailwind CSS for styling.
 

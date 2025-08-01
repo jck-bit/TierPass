@@ -2,6 +2,10 @@ import { SignedIn, SignedOut } from '@clerk/nextjs'
 import Link from 'next/link'
 
 export default function Home() {
+  //only the current year
+  const current_year = new Date().getFullYear()
+
+
   const tiers = [
     {
       name: 'Free',
@@ -150,7 +154,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="container mx-auto px-4 py-8 mt-16 border-t border-gray-200">
         <div className="text-center text-gray-600">
-          <p> 2024 Event Showcase. Built with Next.js, Clerk, Supabase, and Tailwind CSS.</p>
+          <p> {current_year} TierPass. Built with Next.js, Clerk, Supabase, and Tailwind CSS.</p>
         </div>
       </footer>
     </div>

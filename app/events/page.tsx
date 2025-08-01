@@ -109,7 +109,7 @@ export default async function EventsPage() {
 
         <div className="mb-8 bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            {userTier === 'free' && 'Fre Tier Benefits'}
+            {userTier === 'free' && 'Free Tier Benefits'}
             {userTier === 'silver' && 'Silver Tier Benefits'}
             {userTier === 'gold' && 'Gold Tier Benefits'}
             {userTier === 'platinum' && 'Platinum Tier Benefits'}
