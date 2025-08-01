@@ -1,70 +1,327 @@
-<p align="center">
-  <a href="https://clerk.com?utm_source=github&utm_medium=clerk_docs" target="_blank" rel="noopener noreferrer">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="./public/light-logo.png">
-      <img alt="Clerk Logo for light background" src="./public/dark-logo.png" height="64">
-    </picture>
-  </a>
-  <br />
-</p>
-<div align="center">
-  <h1>
-    Clerk and Next.js App Router Quickstart Demo App
-  </h1>
-  <a href="https://www.npmjs.com/package/@clerk/clerk-js">
-    <img alt="Downloads" src="https://img.shields.io/npm/dm/@clerk/clerk-js" />
-  </a>
-  <a href="https://discord.com/invite/b5rXHjAg7A">
-    <img alt="Discord" src="https://img.shields.io/discord/856971667393609759?color=7389D8&label&logo=discord&logoColor=ffffff" />
-  </a>
-  <a href="https://twitter.com/clerkdev">
-    <img alt="Twitter" src="https://img.shields.io/twitter/url.svg?label=%40clerkdev&style=social&url=https%3A%2F%2Ftwitter.com%2Fclerkdev" />
-  </a>
-  <br />
-  <br />
-  <img alt="Clerk Hero Image" src="./public/hero.png">
-</div>
+# Tier-Based Event Showcase
 
-## Introduction
+A responsive web application that showcases events based on user membership tiers. Built with Next.js 14 (App Router), Clerk.dev for authentication, Supabase for database, and Tailwind CSS for styling.
 
-Clerk is a developer-first authentication and user management solution. It provides pre-built React components and hooks for sign-in, sign-up, user profile, and organization management. Clerk is designed to be easy to use and customize, and can be dropped into any React or Next.js application.
+## Features
 
-Learn how to create your first user with this quickstart demo app.
+- 🔐 **Secure Authentication** - User authentication powered by Clerk.dev
+- 🎫 **Tier-Based Access** - Four membership tiers (Free, Silver, Gold, Platinum)
+- 📅 **Event Management** - Browse events filtered by your membership tier
+- 📱 **Responsive Design** - Beautiful, mobile-friendly UI with Tailwind CSS
+- 🚀 **Modern Stack** - Built with Next.js 14, TypeScript, and React Server Components
+- 🔄 **Tier Simulation** - Test different tiers without payment integration
+- ⚡ **Real-time Updates** - Instant UI updates when tier changes
 
-## Deploy
+## Tech Stack
 
-Easily deploy the template to Vercel with the button below. You will need to set the required environment variables in the Vercel dashboard.
+- **Framework**: Next.js 14 (App Router)
+- **Authentication**: Clerk.dev
+- **Database**: Supabase (PostgreSQL)
+- **Styling**: Tailwind CSS
+- **Language**: TypeScript
+- **Deployment**: Vercel (recommended)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fclerk%2Fclerk-nextjs-quickstart-demo-app&env=NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,CLERK_SECRET_KEY&envDescription=Clerk%20API%20keys&envLink=https%3A%2F%2Fclerk.com%2Fdocs%2Fquickstart%2Fnextjs&redirect-url=https%3A%2F%2Fclerk.com%2Fdocs%2Fquickstart%2Fnextjs)
+## Prerequisites
 
-## Running the template
+Before you begin, ensure you have:
+
+- Node.js 18.17 or later
+- npm or yarn package manager
+- A Clerk.dev account
+- A Supabase account
+
+## Setup Instructions
+
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/clerk/clerk-nextjs-quickstart-demo-app
+git clone <repository-url>
+cd my-clerk-app
 ```
 
-> Note: Node v22+ is required.
+### 2. Install Dependencies
 
-To run the example locally, you need to:
+```bash
+npm install
+# or
+yarn install
+```
 
-1. `npm install` the required dependencies.
-1. `npm run dev` to launch the development server.
-1. Visit the app's homepage to sign up.
+### 3. Set Up Clerk.dev
 
-## Learn more
+1. Create a new application in [Clerk Dashboard](https://dashboard.clerk.dev/)
+2. Copy your API keys from the Clerk dashboard
+3. Configure the following environment variables:
 
-To learn more about Clerk and Next.js, check out the following resources:
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
+CLERK_SECRET_KEY=your_secret_key
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+```
 
-- [Quickstart: Get started with Next.js and Clerk](https://clerk.com/docs/quickstarts/nextjs?utm_source=DevRel&utm_medium=docs&utm_campaign=templates&utm_content=nextjs-quickstart-demo-app)
-- [Clerk Documentation](https://clerk.com/docs?utm_source=DevRel&utm_medium=docs&utm_campaign=templates&utm_content=nextjs-quickstart-demo-app)
-- [Next.js Documentation](https://nextjs.org/docs)
+### 4. Set Up Supabase
 
-## Found an issue or want to leave feedback
+1. Create a new project in [Supabase Dashboard](https://app.supabase.com/)
+2. Copy your project URL and anon key
+3. Add to environment variables:
 
-Feel free to create a support thread on our [Discord](https://clerk.com/discord). Our support team will be happy to assist you in the `#support` channel.
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## Connect with us
+5. **Set up Supabase Database**
+   
+   Run the database setup helper:
+   ```bash
+   npm run setup:db
+   ```
+   
+   This will:
+   - Show you the SQL scripts you need to run
+   - Provide a direct link to your Supabase SQL editor
+   - Guide you through running both the table setup and RLS policies
 
-You can discuss ideas, ask questions, and meet others from the community in our [Discord](https://discord.com/invite/b5rXHjAg7A).
+### 6. Configure Clerk JWT Template
 
-If you prefer, you can also find support through our [Twitter](https://twitter.com/ClerkDev), or you can [email](mailto:support@clerk.dev) us!
+**Important:** This step is required for Supabase RLS integration.
+
+1. Go to your [Clerk Dashboard](https://dashboard.clerk.com)
+2. Navigate to **JWT Templates** in the sidebar
+3. Click **New template**
+4. Configure the template:
+   - **Name**: `supabase` (must match exactly)
+   - **Signing algorithm**: `HS256`
+   - **Claims**: Add the following JSON:
+   ```json
+   {
+     "aud": "authenticated",
+     "role": "authenticated",
+     "email": "{{user.primary_email_address}}",
+     "user_id": "{{user.id}}",
+     "tier": "{{user.public_metadata.tier}}"
+   }
+   ```
+   - **Signing key**: Your Supabase JWT secret (found in Supabase Settings → API)
+5. Save the template
+6. Add to environment variables:
+   ```env
+   NEXT_PUBLIC_CLERK_JWT_TEMPLATE_NAME=supabase
+   ```
+
+For detailed instructions, see [docs/clerk-jwt-setup.md](docs/clerk-jwt-setup.md)
+
+### 6. Environment Variables
+
+Create a `.env.local` file in the root directory and add all the environment variables from `.env.example`:
+
+```bash
+cp .env.example .env.local
+```
+
+Then fill in your actual values.
+
+### 7. Run the Development Server
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see the application.
+
+## Demo Credentials & Testing
+
+### Testing Different Tiers
+
+1. **Sign up** for a new account (you'll start with the Free tier)
+2. Navigate to the **Dashboard**
+3. Use the **"Simulate Tier Upgrade"** feature to test different tiers
+4. Visit the **Events** page to see how accessible events change based on your tier
+
+### Tier Access Levels
+
+- **Free**: Access to 2 community events
+- **Silver**: Access to 4 events (Free + Silver events)
+- **Gold**: Access to 6 events (Free + Silver + Gold events)
+- **Platinum**: Access to all 8 events
+
+## Project Structure
+
+```
+my-clerk-app/
+├── app/                    # Next.js app router pages
+│   ├── api/               # API routes
+│   ├── dashboard/         # Dashboard page
+│   ├── events/            # Events listing page
+│   ├── sign-in/           # Sign in page
+│   ├── sign-up/           # Sign up page
+│   └── layout.tsx         # Root layout with Clerk provider
+├── components/            # Reusable React components
+│   ├── EventCard.tsx      # Event card component
+│   └── TierUpgradeSimulator.tsx  # Tier simulation component
+├── lib/                   # Utility functions and services
+│   ├── services/          # Business logic
+│   └── supabase/          # Supabase client configuration
+├── supabase/              # Database setup
+│   └── database-setup.sql          # SQL schema and seed data
+└── public/                # Static assets
+```
+
+## Key Features Implementation
+
+### Authentication Flow
+- Clerk handles all authentication
+- Protected routes redirect to sign-in if not authenticated
+- User metadata stores the tier information
+
+### Tier-Based Filtering
+- Events are filtered server-side based on user tier
+- Each tier includes access to all lower tiers
+- Visual indicators show locked/unlocked events
+
+### Database Schema
+```sql
+CREATE TYPE tier_type AS ENUM ('free', 'silver', 'gold', 'platinum');
+
+CREATE TABLE events (
+  id UUID PRIMARY KEY,
+  title VARCHAR(255),
+  description TEXT,
+  event_date TIMESTAMP,
+  image_url VARCHAR(255),
+  tier tier_type,
+  created_at TIMESTAMP
+);
+```
+
+## Deployment
+
+### Prerequisites for Deployment
+
+1. Complete all local setup steps
+2. Ensure Clerk JWT template is configured (see [JWT Setup Guide](docs/clerk-jwt-setup.md))
+3. Verify Supabase RLS policies are applied
+4. Test locally with different user tiers
+
+### Deploy to Vercel
+
+1. **Prepare your repository**
+   ```bash
+   git add .
+   git commit -m "Ready for deployment"
+   git push origin main
+   ```
+
+2. **Import to Vercel**
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click "New Project"
+   - Import your GitHub repository
+   - Select the repository containing your project
+
+3. **Configure Environment Variables**
+   
+   Add ALL the following environment variables in Vercel project settings:
+
+   **Clerk Variables:**
+   ```
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<your_clerk_publishable_key>
+   CLERK_SECRET_KEY=<your_clerk_secret_key>
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+   NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/dashboard
+   NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard
+   NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/dashboard
+   NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/dashboard
+   ```
+
+   **Supabase Variables:**
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=<your_supabase_project_url>
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=<your_supabase_anon_key>
+   ```
+
+   **JWT Template Variable:**
+   ```
+   NEXT_PUBLIC_CLERK_JWT_TEMPLATE_NAME=supabase
+   ```
+
+4. **Deploy**
+   - Click "Deploy"
+   - Wait for the build to complete
+   - Your app will be live at `https://your-project.vercel.app`
+
+### Post-Deployment Checklist
+
+1. **Update Clerk Settings**
+   - Add your production URL to Clerk allowed origins
+   - Update redirect URLs if needed
+
+2. **Test Production**
+   - Sign up with a new account
+   - Test tier upgrade simulation
+   - Verify events are filtered correctly
+   - Check that RLS policies are working
+
+3. **Monitor**
+   - Check Vercel logs for any errors
+   - Monitor Supabase dashboard for RLS policy violations
+   - Review Clerk dashboard for authentication issues
+
+### Troubleshooting Deployment
+
+**JWT Token Issues:**
+- Ensure JWT template name matches exactly in Clerk Dashboard and env vars
+- Verify Supabase JWT secret is correctly set in Clerk JWT template
+- Check browser console for JWT-related errors
+
+**RLS Policy Issues:**
+- Verify RLS policies are enabled in Supabase
+- Check that JWT claims include user tier
+- Test with Supabase SQL editor to debug policies
+
+**Build Errors:**
+- Ensure all dependencies are in `package.json`
+- Check for TypeScript errors with `npm run build` locally
+- Verify all environment variables are set in Vercel
+
+## Development Tips
+
+1. **Testing Tiers**: Use the dashboard's tier simulator to quickly test different access levels
+2. **Adding Events**: Add new events via Supabase dashboard or SQL editor
+3. **Customizing Tiers**: Modify tier definitions in `lib/services/events.ts`
+4. **Styling**: All components use Tailwind CSS classes for easy customization
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"Cannot find module" errors**: 
+   - Ensure all dependencies are installed
+   - Check import paths use correct aliases (@/...)
+
+2. **Supabase connection issues**:
+   - Verify environment variables are set correctly
+   - Check if the database tables were created
+
+3. **Clerk authentication issues**:
+   - Ensure Clerk API keys are correct
+   - Check redirect URLs match your configuration
+
+## Future Enhancements
+
+- [ ] Payment integration for real tier upgrades
+- [ ] Event registration system
+- [ ] Email notifications for new events
+- [ ] Admin panel for event management
+- [ ] Advanced filtering and search
+- [ ] User profiles and event history
+
+## License
+
+This project is licensed under the MIT License.
+

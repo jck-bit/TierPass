@@ -1,7 +1,7 @@
 export default {
   'code[class*="language-"]': {
     color: '#c5c8c6',
-    fontFamily: 'var(--font-geist-mono)',
+    fontFamily: 'var(--font-cabin)',
     direction: 'ltr',
     textAlign: 'left',
     whiteSpace: 'pre',
@@ -19,7 +19,7 @@ export default {
   },
   'pre[class*="language-"]': {
     color: '#c5c8c6',
-    fontFamily: 'var(--font-geist-mono)',
+    fontFamily: 'var(--font-cabin)',
     direction: 'ltr',
     textAlign: 'left',
     whiteSpace: 'pre',

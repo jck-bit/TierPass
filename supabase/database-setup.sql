@@ -1,0 +1,129 @@
+-- Supabase Setup SQL
+-- Run this in your Supabase SQL editor
+
+-- Create tier enum type (if it doesn't exist)
+DO $$ BEGIN
+    CREATE TYPE tier_type AS ENUM ('free', 'silver', 'gold', 'platinum');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+-- Create events table
+CREATE TABLE IF NOT EXISTS events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    event_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    image_url TEXT NOT NULL,
+    tier tier_type NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+
+-- Create policy to allow public read access
+DROP POLICY IF EXISTS "Public can read events" ON events;
+CREATE POLICY "Public can read events" ON events
+    FOR SELECT
+    TO anon, authenticated
+    USING (true);
+
+-- Seed the table with sample events (2 per tier)
+INSERT INTO events (title, description, event_date, image_url, tier) VALUES
+    -- Free tier events
+    ('Community Meetup', 'Join us for our monthly community gathering to network and share ideas with fellow enthusiasts.', '2025-08-15 18:00:00+00', 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800', 'free'),
+    ('Introduction to Web Development', 'A beginner-friendly workshop covering the basics of HTML, CSS, and JavaScript.', '2025-08-20 14:00:00+00', 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=800', 'free'),
+    
+    -- Silver tier events
+    ('Advanced React Patterns', 'Deep dive into advanced React patterns including custom hooks, context optimization, and performance techniques.', '2025-08-10 16:00:00+00', 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800', 'silver'),
+    ('Database Design Masterclass', 'Learn professional database design principles, normalization, and optimization strategies.', '2025-08-25 15:00:00+00', 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800', 'silver'),
+    
+    -- Gold tier events
+    ('AI & Machine Learning Summit', 'Exclusive summit featuring industry leaders discussing the latest in AI and ML technologies.', '2025-08-05 09:00:00+00', 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800', 'gold'),
+    ('Cloud Architecture Workshop', 'Hands-on workshop on designing scalable cloud solutions with AWS, Azure, and GCP experts.', '2025-08-18 10:00:00+00', 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800', 'gold'),
+    
+    -- Platinum tier events
+    ('Executive Tech Leadership Forum', 'Invitation-only forum for C-level executives to discuss digital transformation strategies.', '2025-08-08 13:00:00+00', 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800', 'platinum'),
+    ('VIP Startup Accelerator Pitch Day', 'Exclusive access to top startup pitches with networking opportunities with venture capitalists.', '2025-08-22 11:00:00+00', 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800', 'platinum');
+
+
+-- Row Level Security Policies
+-- Enable Row Level Security on the events table
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+
+-- Function to get user tier from JWT claims
+CREATE OR REPLACE FUNCTION public.get_user_tier()
+RETURNS tier_type AS $$
+DECLARE
+  user_tier text;
+BEGIN
+  -- Extract tier from JWT claims
+  user_tier := current_setting('request.jwt.claims', true)::json->>'tier';
+  
+  -- Default to 'free' if no tier is found
+  IF user_tier IS NULL THEN
+    RETURN 'free'::tier_enum;
+  END IF;
+  
+  -- Return the tier as enum
+  RETURN user_tier::tier_type;
+EXCEPTION
+  WHEN OTHERS THEN
+    -- Default to 'free' on any error
+    RETURN 'free'::tier_type;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create a function to check if a user can access an event based on tier
+CREATE OR REPLACE FUNCTION can_access_event(event_tier tier_type, user_tier tier_type)
+RETURNS BOOLEAN AS $$
+BEGIN
+  -- Define tier hierarchy: free < silver < gold < platinum
+  CASE user_tier
+    WHEN 'platinum' THEN RETURN true; -- Platinum can access all events
+    WHEN 'gold' THEN RETURN event_tier IN ('free', 'silver', 'gold');
+    WHEN 'silver' THEN RETURN event_tier IN ('free', 'silver');
+    WHEN 'free' THEN RETURN event_tier = 'free';
+    ELSE RETURN false;
+  END CASE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Policy for SELECT: Users can only see events at or below their tier
+DROP POLICY IF EXISTS "Users can view events based on tier" ON events;
+CREATE POLICY "Users can view events based on tier"
+  ON events
+  FOR SELECT
+  TO authenticated
+  USING (
+    -- Check if the user is authenticated and has a valid JWT
+    auth.role() = 'authenticated' AND
+    -- Check if the event tier is at or below user's tier
+    tier <= get_user_tier()
+  );
+
+-- Policy for INSERT: Only allow admins to insert events (optional)
+DROP POLICY IF EXISTS "Only admins can insert events" ON events;
+CREATE POLICY "Only admins can insert events" ON events
+  FOR INSERT
+  WITH CHECK (false); 
+
+-- Policy for UPDATE: Only allow admins to update events (optional)
+DROP POLICY IF EXISTS "Only admins can update events" ON events;
+CREATE POLICY "Only admins can update events" ON events
+  FOR UPDATE
+  USING (false); -- Disable updates through client for now
+
+-- Policy for DELETE: Only allow admins to delete events (optional)
+DROP POLICY IF EXISTS "Only admins can delete events" ON events;
+CREATE POLICY "Only admins can delete events" ON events
+  FOR DELETE
+  USING (false); -- Disable deletes through client for now
+
+-- Grant necessary permissions
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT ON events TO anon, authenticated;
+
+-- Create an index for better performance on tier-based queries
+CREATE INDEX IF NOT EXISTS idx_events_tier ON events(tier);
