@@ -11,8 +11,17 @@ export default async function DashboardPage() {
   }
 
   // Get current user and their tier from metadata
-  const user = await currentUser()
-  const userTier = (user?.publicMetadata?.tier as TierType) || 'free'
+  let user = null
+  let userTier: TierType = 'free'
+  
+  try {
+    user = await currentUser()
+    userTier = (user?.publicMetadata?.tier as TierType) || 'free'
+  } catch (error) {
+    console.error('Error fetching user:', error)
+    // Use default tier if there's an error
+    userTier = 'free'
+  }
 
   const tierBenefits = {
     free: [

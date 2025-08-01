@@ -26,8 +26,8 @@ export default function EventCard({ event, isAccessible }: EventCardProps) {
   const formattedTime = format(eventDate, 'h:mm a')
 
   return (
-    <div className={`relative overflow-hidden rounded-xl shadow-lg transition-all duration-300 ${
-      isAccessible ? 'hover:shadow-xl hover:scale-105' : 'opacity-75'
+    <div className={`relative overflow-hidden rounded-sm shadow-lg transition-all duration-300 ${
+      isAccessible ? 'hover:shadow-xl hover:scale-99' : 'opacity-75'
     }`}>
       {/* Event Image */}
       <div className="relative h-48 overflow-hidden">

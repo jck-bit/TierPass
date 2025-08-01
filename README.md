@@ -168,7 +168,7 @@ my-clerk-app/
 │   ├── services/          # Business logic
 │   └── supabase/          # Supabase client configuration
 ├── supabase/              # Database setup
-│   └── setup.sql          # SQL schema and seed data
+│   └── database-setup.sql          # SQL schema and seed data
 └── public/                # Static assets
 ```
 
@@ -325,9 +325,3 @@ CREATE TABLE events (
 
 This project is licensed under the MIT License.
 
-## Support
-
-For issues and questions:
-- Check the [troubleshooting](#troubleshooting) section
-- Create an issue in the repository
-- Contact support for Clerk or Supabase specific issues

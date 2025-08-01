@@ -1,6 +1,6 @@
 export default function EventCardSkeleton() {
   return (
-    <div className="relative overflow-hidden rounded-xl shadow-lg animate-pulse">
+    <div className="relative overflow-hidden rounded-sm shadow-lg animate-pulse">
       {/* Event Image Skeleton */}
       <div className="h-48 bg-gray-200" />
       

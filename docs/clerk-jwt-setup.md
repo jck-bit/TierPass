@@ -30,7 +30,7 @@
 
 ## Step 2: Update Environment Variables
 
-Add the following to your `.env.local`:
+Add the following to your `.env`:
 
 ```bash
 # Clerk JWT Template Name

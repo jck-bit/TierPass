@@ -34,11 +34,10 @@ function EventsError({ error }: { error: Error }) {
 // Separate component for events list
 async function EventsList({ userTier }: { userTier: TierType }) {
   try {
-    // Fetch events based on user tier
+    
     const accessibleEvents = await getEventsForUserTier(userTier)
     const allEvents = await getAllEvents()
 
-    // Create a set of accessible event IDs for quick lookup
     const accessibleEventIds = new Set(accessibleEvents.map(event => event.id))
 
     if (allEvents.length === 0) {
@@ -67,15 +66,21 @@ async function EventsList({ userTier }: { userTier: TierType }) {
 }
 
 export default async function EventsPage() {
-  // Check if user is authenticated
   const { userId } = await auth()
   if (!userId) {
     redirect('/sign-in')
   }
 
-  // Get current user and their tier from metadata
-  const user = await currentUser()
-  const userTier = (user?.publicMetadata?.tier as TierType) || 'free'
+  let user = null
+  let userTier: TierType = 'free'
+  
+  try {
+    user = await currentUser()
+    userTier = (user?.publicMetadata?.tier as TierType) || 'free'
+  } catch (error) {
+    console.error('Error fetching user:', error)
+    userTier = 'free'
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -103,10 +108,9 @@ export default async function EventsPage() {
           </div>
         </div>
 
-        {/* Tier Benefits Info */}
         <div className="mb-8 bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            {userTier === 'free' && 'Free Tier Benefits'}
+            {userTier === 'free' && 'Fre Tier Benefits'}
             {userTier === 'silver' && 'Silver Tier Benefits'}
             {userTier === 'gold' && 'Gold Tier Benefits'}
             {userTier === 'platinum' && 'Platinum Tier Benefits'}
@@ -119,7 +123,6 @@ export default async function EventsPage() {
           </p>
         </div>
 
-        {/* Events Grid with Loading State */}
         <Suspense fallback={<EventsLoading />}>
           <EventsList userTier={userTier} />
         </Suspense>

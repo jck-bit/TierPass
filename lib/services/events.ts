@@ -14,11 +14,9 @@ const tierHierarchy: Record<TierType, number> = {
 export async function getEventsForUserTier(userTier: TierType | null): Promise<Event[]> {
   const supabase = await createAuthenticatedClient()
   
-  // Default to 'free' tier if no tier is set
   const effectiveTier = userTier || 'free'
   const userTierLevel = tierHierarchy[effectiveTier]
   
-  // Get all tiers that the user has access to
   const accessibleTiers = Object.entries(tierHierarchy)
     .filter(([_, level]) => level <= userTierLevel)
     .map(([tier]) => tier)

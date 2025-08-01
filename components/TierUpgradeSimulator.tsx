@@ -126,7 +126,7 @@ export default function TierUpgradeSimulator({ currentTier, userId }: TierUpgrad
       </button>
 
       <p className="text-xs text-gray-500 text-center">
-        This is a simulation for testing purposes. In production, tier changes would require payment processing.
+        Introduce a mock payment processing system
       </p>
     </div>
   )
